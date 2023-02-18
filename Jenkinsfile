@@ -24,7 +24,7 @@ spec:
     node (label) {
 
         stage ('Checkout SCM'){
-          git url: 'https://dptrealtime@bitbucket.org/dptrealtime/edweb-login-integration.git', branch: 'master'
+          git url: 'https://github.com/iamLateesh/edweb-login-integration.git', branch: 'master'
           container('build') {
                 stage('Build a Maven project') {
                     sh 'mvn clean deploy -s settings.xml'             
@@ -35,8 +35,8 @@ spec:
         stage ('Docker Build'){
           container('build') {
                 stage('Build Image') {
-                    docker.withRegistry( 'https://registry.hub.docker.com', 'docker' ) {
-                    def customImage = docker.build("dpthub/webapp")
+                    docker.withRegistry( 'https://registry.hub.docker.com', 'Docker' ) {
+                    def customImage = docker.build("iamlateesh/webapp")
                     customImage.push()             
                     }
                 }
@@ -46,9 +46,9 @@ spec:
         stage ('Helm Chart') {
           container('build') {
             dir('charts') {
-              withCredentials([usernamePassword(credentialsId: 'jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
+              withCredentials([usernamePassword(credentialsId: 'Jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
               sh '/usr/local/bin/helm package webapp'
-              sh '/usr/local/bin/helm push-artifactory webapp-1.0.tgz https://edwikifacts.jfrog.io/artifactory/edweb-helm-local --username $username --password $password'
+              sh '/usr/local/bin/helm push-artifactory webapp-1.0.tgz https://lateesh.jfrog.io/artifactory/edweb-helm-local --username $username --password $password'
               }
             }
         }
